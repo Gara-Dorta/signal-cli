@@ -24,6 +24,7 @@ git clean -Xfd -e '!/dist/' -e '!/dist/**' -e '!/github/' -e '!/github/**'
 # shellcheck disable=SC2086
 $ENGINE run --pull=never --rm -v "$(pwd)":/signal-cli:Z -e VERSION="$VERSION" $USER signal-cli:build
 mv build/distributions/signal-cli-*.tar.gz dist/
+mv build_schemas/signal-cli-*-json-schemas.tar.gz dist/
 
 if [ -n "${OVERRIDE_JAVA_VERSION:-}" ]; then
 	echo -e "\e[33mBuild was performed with overridden Java version $OVERRIDE_JAVA_VERSION, native-image and client will not be built.\e[0m"

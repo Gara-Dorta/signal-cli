@@ -12,7 +12,7 @@ reset_file_dates
 
 if [ "$1" == "build" ]; then
 
-	./gradlew build \
+	./gradlew build jsonSchemas \
 		--no-daemon \
 		--max-workers=1 \
 		-Dkotlin.compiler.execution.strategy=in-process \
@@ -20,6 +20,13 @@ if [ "$1" == "build" ]; then
 		-Dorg.gradle.caching=false \
 		-Porg.gradle.java.installations.auto-download=false \
 		-Porg.gradle.java.installations.auto-detect=false
+
+	mkdir -p build_schemas/
+	mv build/generated/META-INF/schemas build_schemas/schemas
+	schemas_tar="build_schemas/signal-cli-${VERSION}-json-schemas.tar"
+	tar --sort=name --mtime="@$SOURCE_DATE_EPOCH" --owner=0 --group=0 --numeric-owner -cf "$schemas_tar" -C build_schemas/schemas "signal-cli-${VERSION}-json-schemas"
+	gzip -n -9 "$schemas_tar"
+
 	cd man
 	make install
 	cd ..
